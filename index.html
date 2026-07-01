@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Windows 7 - Simulace</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- BOOT SPLASH -->
+  <div id="boot-splash-screen" class="fullscreen-panel" style="display:none;">
+    <div class="win7-orb big">
+      <div class="wq wq1"></div><div class="wq wq2"></div><div class="wq wq3"></div><div class="wq wq4"></div>
+    </div>
+    <div class="boot-dots"><span></span><span></span><span></span><span></span></div>
+    <div class="boot-text">Spouštění systému Windows 7</div>
+  </div>
+
+  <!-- LICENČNÍ PODMÍNKY -->
+  <div id="license-screen" class="fullscreen-panel" style="display:none;">
+    <div class="panel-box">
+      <h1>Licenční podmínky</h1>
+      <p class="sub">Přečtěte si a přijměte licenční podmínky</p>
+      <div class="license-text">
+        Tento software je poskytován „tak jak je" pouze pro simulační a výukové účely.
+        Používáním tohoto systému souhlasíte s tím, že se jedná o webovou simulaci a
+        nikoliv o skutečný operační systém Windows. Společnost neposkytuje žádné záruky.
+      </div>
+      <label class="license-check">
+        <input type="checkbox" id="license-checkbox"> Přijímám licenční podmínky
+      </label>
+      <button class="win7-btn" id="license-next-btn" disabled>Další →</button>
+    </div>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen" class="fullscreen-panel" style="display:none;">
+    <div class="panel-box">
+      <h1>Nastavení systému Windows</h1>
+      <p class="sub">Zadejte údaje pro váš uživatelský účet</p>
+      <label>Uživatelské jméno</label>
+      <input type="text" id="setup-username" placeholder="např. Uživatel" maxlength="20">
+      <label>Heslo</label>
+      <input type="password" id="setup-password" placeholder="Heslo (nepovinné)" maxlength="30">
+      <label>Potvrďte heslo</label>
+      <input type="password" id="setup-password2" placeholder="Potvrďte heslo" maxlength="30">
+      <div id="setup-error" style="color:#ffb3b3;font-size:12px;height:16px;margin-top:6px;"></div>
+      <button class="win7-btn" id="setup-finish-btn">Dokončit nastavení</button>
+    </div>
+  </div>
+
+  <!-- INSTALL SCREEN -->
+  <div id="install-screen" class="fullscreen-panel" style="display:none;">
+    <div class="panel-box" style="max-width:340px;">
+      <h1>Instalace systému Windows</h1>
+      <p class="sub">Prosím čekejte, probíhá dokončování instalace</p>
+      <div class="prog-outer"><div class="prog-inner" id="install-progress"></div></div>
+      <div class="stage-text" id="install-stage-text">Připravuji instalaci...</div>
+      <div class="stage-list" id="install-stage-list"></div>
+    </div>
+  </div>
+
+  <!-- AUTOMATICKÁ OPRAVA -->
+  <div id="repair-screen" class="fullscreen-panel" style="display:none; background:linear-gradient(135deg,#151515,#2a2a2a);">
+    <div class="repair-icon">🛠️</div>
+    <div class="poweroff-title" id="repair-title">Automatická oprava</div>
+    <div class="prog-outer"><div class="prog-inner" id="repair-progress"></div></div>
+    <div class="repair-log" id="repair-log"></div>
+  </div>
+
+  <!-- POWEROFF / SKŘÍŇ POČÍTAČE -->
+  <div id="poweroff-screen" class="fullscreen-panel" style="display:none;">
+    <div class="poweroff-title">Počítač je vypnutý</div>
+    <div class="tower-wrap">
+      <div class="pc-tower">
+        <div class="slit slit1"></div><div class="slit slit2"></div><div class="slit slit3"></div>
+        <div class="pc-power-btn" id="pc-power-btn">⏻</div>
+      </div>
+    </div>
+    <div class="poweroff-hint">Klikněte na tlačítko na skříni pro zapnutí.<br>Rychlý dvojklik spustí automatickou opravu.</div>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="fullscreen-panel" style="display:none;">
+    <div class="panel-box">
+      <div id="login-avatar">🙂</div>
+      <h1 id="login-username-display">Uživatel</h1>
+      <p class="sub">Zadejte heslo pro přihlášení</p>
+      <input type="password" id="login-password" placeholder="Heslo">
+      <div id="login-error"></div>
+      <button class="win7-btn" id="login-btn">Přihlásit se →</button>
+    </div>
+  </div>
+
+  <!-- SHUTDOWN / RESTART SCREEN -->
+  <div id="shutdown-screen" class="fullscreen-panel" style="display:none;">
+    <div class="shutdown-icon">⏻</div>
+    <div class="shutdown-text" id="shutdown-text">Vypínání systému...</div>
+  </div>
+
+  <!-- DESKTOP -->
+  <div id="desktop" style="display:none;">
+    <div id="icons-layer">
+      <!-- icons injected by JS -->
+    </div>
+    <div id="select-rect"></div>
+    <div id="windows-container"></div>
+    <div id="taskbar-peek-strip"></div>
+
+    <!-- Desktop context menu -->
+    <div class="context-menu" id="ctx-desktop">
+      <div class="cm-item" data-act="refresh">Obnovit</div>
+      <div class="cm-sep"></div>
+      <div class="cm-item" data-sub="view-sub">Zobrazit <span class="arrow">▶</span></div>
+      <div class="sub-menu context-menu" id="view-sub">
+        <div class="cm-item" data-act="view-large">Velké ikony</div>
+        <div class="cm-item" data-act="view-medium">Střední ikony ✓</div>
+        <div class="cm-item" data-act="view-small">Malé ikony</div>
+      </div>
+      <div class="cm-item" data-sub="sort-sub">Seřadit podle <span class="arrow">▶</span></div>
+      <div class="sub-menu context-menu" id="sort-sub">
+        <div class="cm-item" data-act="sort-name">Názvu</div>
+        <div class="cm-item" data-act="sort-size">Velikosti</div>
+        <div class="cm-item" data-act="sort-type">Typu položky</div>
+      </div>
+      <div class="cm-sep"></div>
+      <div class="cm-item" data-sub="new-sub">Nový <span class="arrow">▶</span></div>
+      <div class="sub-menu context-menu" id="new-sub">
+        <div class="cm-item" data-act="new-folder">📁 Složka</div>
+        <div class="cm-item" data-act="new-file">📄 Textový dokument</div>
+      </div>
+      <div class="cm-sep"></div>
+      <div class="cm-item" data-act="properties">Vlastnosti</div>
+    </div>
+
+    <!-- Taskbar context menu -->
+    <div class="context-menu" id="ctx-taskbar">
+      <div class="cm-item" data-act="open-taskmgr">Správce úloh</div>
+      <div class="cm-item" data-act="open-controlpanel">Ovládací panely</div>
+      <div class="cm-sep"></div>
+      <div class="cm-item" data-act="taskbar-props">Vlastnosti hlavního panelu</div>
+    </div>
+
+    <!-- TASKBAR -->
+    <div id="taskbar">
+      <div id="start-button"><div class="win7-orb"><div class="wq wq1"></div><div class="wq wq2"></div><div class="wq wq3"></div><div class="wq wq4"></div></div> Start</div>
+      <div id="taskbar-windows"></div>
+      <div id="clock-box">
+        <div id="clock-time">--:--</div>
+        <div id="clock-date">--.--.----</div>
+      </div>
+
+      <!-- START MENU -->
+      <div id="start-menu">
+        <div class="sm-header" id="sm-user-header">Uživatel</div>
+        <div class="sm-item" data-act="open-computer">💻 Tento počítač</div>
+        <div class="sm-item" data-act="open-controlpanel">⚙️ Ovládací panely</div>
+        <div class="sm-item" data-act="open-cmd"><span class="cmd-icon-mini">&gt;_</span> Příkazový řádek</div>
+        <div class="sm-item" data-act="open-taskmgr">📊 Správce úloh</div>
+        <div class="sm-item" data-act="open-recyclebin">🗑️ Koš</div>
+        <div class="sm-footer">
+          <div data-act="restart">🔄 Restartovat</div>
+          <div data-act="shutdown">⏻ Vypnout</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
